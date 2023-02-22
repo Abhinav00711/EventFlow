@@ -1,4 +1,4 @@
-package com.example.teacher
+package com.eventflow.teacher
 
 import io.flutter.embedding.android.FlutterActivity
 
