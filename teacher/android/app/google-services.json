@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "348375917529",
+    "project_id": "eventflow-23e7e",
+    "storage_bucket": "eventflow-23e7e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348375917529:android:a10360a0088cc007392fc8",
+        "android_client_info": {
+          "package_name": "com.eventflow.teacher"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "348375917529-i4u9giqq9f3mpq1q5tvu1f1i5d66less.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eventflow.teacher",
+            "certificate_hash": "39a8094309680b588745e8d1ef45fc7f0da06b14"
+          }
+        },
+        {
+          "client_id": "348375917529-ugqo330bbfnf4u19kqqc6cj9e1p01neb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlhNzr_q8OPPO3tvtijgMdewHsWMbhnqg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "348375917529-ugqo330bbfnf4u19kqqc6cj9e1p01neb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
