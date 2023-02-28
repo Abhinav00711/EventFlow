@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "348375917529-k0bn72p7sqmh9i44jk7d50f5uulnpl7e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eventflow.student",
+            "certificate_hash": "658fd1aed0531ca8b44466047880d6c50e1fb119"
+          }
+        },
+        {
           "client_id": "348375917529-ugqo330bbfnf4u19kqqc6cj9e1p01neb.apps.googleusercontent.com",
           "client_type": 3
         }
