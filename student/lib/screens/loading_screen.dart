@@ -7,9 +7,9 @@ class LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.black,
-      body: const Center(
+      body: Center(
         child: rive.RiveAnimation.asset(
           'assets/animations/loader.riv',
           animations: ['loop'],
