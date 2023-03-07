@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
-// import '../screens/login_screen.dart';
+import '../screens/login_screen.dart';
 // import '../screens/tabs_screen.dart';
-// import '../screens/verify_screen.dart';
+import '../screens/verify_screen.dart';
 import '../screens/error_screen.dart';
 import '../screens/loading_screen.dart';
 import '../providers/auth_provider.dart';
@@ -35,7 +35,8 @@ class Wrapper extends StatelessWidget {
                   return const Scaffold(
                     body: Center(
                       child: Text('loggedin'),
-                    ),);
+                    ),
+                  );
                   // return FutureBuilder<Retailer?>(
                   //   future: FirestoreService().getUser(user.data!.uid),
                   //   builder: (context, userData) {
@@ -51,11 +52,7 @@ class Wrapper extends StatelessWidget {
                   // );
                 } else {
                   user.data!.sendEmailVerification();
-                  return const Scaffold(
-                    body: Center(
-                      child: Text('Verify Screen'),
-                    ),);
-                  // return VerifyScreen();
+                  return const VerifyScreen();
                 }
               } else {
                 return const LoadingScreen();
@@ -63,12 +60,7 @@ class Wrapper extends StatelessWidget {
             },
           );
         } else {
-          return const Scaffold(
-                    body: Center(
-                      child: Text('login screen'),
-                    ),
-                    );
-          // return LoginScreen();
+          return const LoginScreen();
         }
       },
     );
