@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../LoginScreen/decoration_functions.dart';
 import '../../providers/auth_provider.dart';
-import '../../models/student.dart';
+import '../../models/teacher.dart';
 import '../../models/interest.dart';
 import '../../services/mysql_service.dart';
 
@@ -24,10 +24,9 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   String _name = '';
-  String _sid = '';
+  String _tid = '';
   String _phone = '';
   String _department = '';
-  String _course = '';
 
   static final List<String> _interests = [
     'Computer Science',
@@ -109,7 +108,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   }
                 },
                 onSaved: (newValue) {
-                  _sid = newValue!.trim();
+                  _tid = newValue!.trim();
                 },
               ),
             ),
@@ -152,12 +151,12 @@ class _RegisterFormState extends State<RegisterForm> {
                   fontSize: 18,
                   color: Colors.white,
                 ),
+                initialValue: widget.email,
+                enabled: false,
                 decoration: registerInputDecoration(
                   hintText: 'Email',
                   icon: Icons.mail,
                 ),
-                initialValue: widget.email,
-                enabled: false,
                 keyboardType: TextInputType.streetAddress,
                 autocorrect: false,
                 cursorColor: Colors.white,
@@ -202,33 +201,6 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: TextFormField(
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                ),
-                decoration: registerInputDecoration(
-                  hintText: 'Course',
-                  icon: FontAwesomeIcons.book,
-                ),
-                keyboardType: TextInputType.name,
-                autocorrect: false,
-                cursorColor: Colors.white,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) {
-                  if (value!.trim().isEmpty) {
-                    return 'Please enter your course.';
-                  } else {
-                    return null;
-                  }
-                },
-                onSaved: (newValue) {
-                  _course = newValue!.trim();
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
               child: MultiSelectChipField<String?>(
                 items: _items,
                 icon: const Icon(FontAwesomeIcons.xmark),
@@ -256,7 +228,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     if (RegisterForm._formKey.currentState!.validate()) {
                       RegisterForm._formKey.currentState!.save();
                       final intData = Interest(
-                        intId: 'S$_sid',
+                        intId: 'S$_tid',
                         cs: _selectedInterests.contains('Computer Science'),
                         law: _selectedInterests.contains('Law'),
                         statistics: _selectedInterests.contains('Statistics'),
@@ -264,17 +236,16 @@ class _RegisterFormState extends State<RegisterForm> {
                         humanities: _selectedInterests.contains('Humanities'),
                         science: _selectedInterests.contains('Science'),
                       );
-                      final studData = Student(
-                        sid: _sid,
-                        intId: 'S$_sid',
+                      final teachData = Teacher(
+                        tid: _tid,
+                        intId: 'S$_tid',
                         name: _name,
                         phone: _phone,
                         email: widget.email,
                         department: _department,
-                        course: _course,
                       );
                       var res =
-                          await MySqlService().addStudent(studData, intData);
+                          await MySqlService().addTeacher(teachData, intData);
                       if (mounted) {
                         if (res == 1) {
                           ScaffoldMessenger.of(context).showSnackBar(

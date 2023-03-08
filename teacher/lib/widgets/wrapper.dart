@@ -8,7 +8,7 @@ import '../screens/verify_screen.dart';
 import '../screens/error_screen.dart';
 import '../screens/loading_screen.dart';
 import '../providers/auth_provider.dart';
-import '../models/student.dart';
+import '../models/teacher.dart';
 import '../services/mysql_service.dart';
 import '../data/global.dart';
 
@@ -31,8 +31,8 @@ class Wrapper extends StatelessWidget {
                 return const ErrorScreen();
               } else if (verify.hasData) {
                 if (verify.data!) {
-                  return FutureBuilder<Student?>(
-                    future: MySqlService().getStudent(user.data!.email!),
+                  return FutureBuilder<Teacher?>(
+                    future: MySqlService().getTeacher(user.data!.email!),
                     builder: (context, userData) {
                       if (userData.hasError) {
                         return const ErrorScreen();
