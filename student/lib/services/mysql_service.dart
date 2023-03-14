@@ -4,6 +4,7 @@ import 'package:mysql1/mysql1.dart';
 
 import '../models/student.dart';
 import '../models/interest.dart';
+import '../models/event.dart';
 
 class MySqlService {
   Future<MySqlConnection> getConnection() async {
@@ -51,20 +52,68 @@ class MySqlService {
     var con = await getConnection();
     Results result =
         await con.query('select * from student where email = ?', [email]);
-    List<Student> s = [];
-    for (var row in result) {
-      Student stud = Student(
-        sid: row['sid'],
-        intId: row['intid'],
-        name: row['name'],
-        phone: row['phone'],
-        email: row['email'],
-        department: row['dept'],
-        course: row['course'],
-      );
-      s.add(stud);
-    }
     con.close();
-    return s[0];
+    return Student.fromJson(result.elementAt(0).fields);
+  }
+
+  Future<Interest> getInterest(String intid) async {
+    var con = await getConnection();
+    Results result =
+        await con.query('select * from interest where intid = ?', [intid]);
+    con.close();
+    return Interest.fromJson(result.elementAt(0).fields);
+  }
+
+  Future<List<Event>> getAllEvents() async {
+    List<Event> events = [];
+    var con = await getConnection();
+    Results result = await con.query('select * from event');
+    con.close();
+    for (var r in result) {
+      events.add(Event.fromJson(r.fields));
+    }
+    return events;
+  }
+
+  Future<List<Event>> getOngoingEvents() async {
+    List<Event> events = [];
+    var con = await getConnection();
+    Results result =
+        await con.query('select * from event where status = "ONGOING"');
+    con.close();
+    for (var r in result) {
+      events.add(Event.fromJson(r.fields));
+    }
+    return events;
+  }
+
+  Future<Event?> isHosting(String sid) async {
+    var con = await getConnection();
+    Event? e;
+    Results result = await con.query(
+        'select * from event where sid = ? AND status <> "COMPLETED"', [sid]);
+    con.close();
+    if (result.isNotEmpty) {
+      e = Event.fromJson(result.elementAt(0).fields);
+    }
+    return e;
+  }
+
+  Future<int> requestEvent(Event event) async {
+    var con = await getConnection();
+    var result = await con.query(
+        'insert into event (eid,sid,tid,interest,start,end,description,status) values (?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          event.eid,
+          event.sid,
+          event.tid,
+          event.interest,
+          event.start,
+          event.end,
+          event.description,
+          event.status,
+        ]);
+    con.close();
+    return result.affectedRows!;
   }
 }
