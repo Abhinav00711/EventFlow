@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:teacher/screens/home.dart';
 
 import '../screens/login_screen.dart';
 import '../screens/verify_screen.dart';
@@ -21,13 +22,17 @@ class Wrapper extends StatelessWidget {
       stream: AuthProvider().user,
       builder: (context, user) {
         if (user.hasError) {
+          print('user ERRORRRRRRRRRRR');
           return const ErrorScreen();
         } else if (user.hasData) {
+          print(user);
           return FutureBuilder<bool>(
             future:
                 Provider.of<AuthProvider>(context, listen: false).isVerified(),
             builder: (context, verify) {
               if (verify.hasError) {
+                print(' 1 ERRORRRRRRRRRRR');
+                print(verify.error);
                 return const ErrorScreen();
               } else if (verify.hasData) {
                 if (verify.data!) {
@@ -35,14 +40,12 @@ class Wrapper extends StatelessWidget {
                     future: MySqlService().getTeacher(user.data!.email!),
                     builder: (context, userData) {
                       if (userData.hasError) {
+                        print('2 ERRORRRRRRRRRRR');
+                        print(userData.error);
                         return const ErrorScreen();
                       } else if (userData.hasData) {
                         Global.userData = userData.data;
-                        return const Scaffold(
-                          body: Center(
-                            child: Text('loggedin'),
-                          ),
-                        );
+                        return  MyApp(text: userData.data!.email,);
                       } else {
                         return const LoadingScreen();
                       }

@@ -42,6 +42,9 @@ class MySqlService {
             teacherData.department,
           ]);
     }
+    else{
+      print("Some error");
+    }
     con.close();
     return result.affectedRows!;
   }

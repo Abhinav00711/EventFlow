@@ -228,7 +228,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     if (RegisterForm._formKey.currentState!.validate()) {
                       RegisterForm._formKey.currentState!.save();
                       final intData = Interest(
-                        intId: 'S$_tid',
+                        intId: 'T$_tid',
                         cs: _selectedInterests.contains('Computer Science'),
                         law: _selectedInterests.contains('Law'),
                         statistics: _selectedInterests.contains('Statistics'),
@@ -238,7 +238,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       );
                       final teachData = Teacher(
                         tid: _tid,
-                        intId: 'S$_tid',
+                        intId: 'T$_tid',
                         name: _name,
                         phone: _phone,
                         email: widget.email,
