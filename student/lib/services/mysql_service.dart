@@ -102,11 +102,12 @@ class MySqlService {
   Future<int> requestEvent(Event event) async {
     var con = await getConnection();
     var result = await con.query(
-        'insert into event (eid,sid,tid,interest,start,end,description,status) values (?, ?, ?, ?, ?, ?, ?, ?)',
+        'insert into event (eid,sid,tid,name,interest,start,end,description,status) values (?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           event.eid,
           event.sid,
           event.tid,
+          event.name,
           event.interest,
           event.start,
           event.end,
