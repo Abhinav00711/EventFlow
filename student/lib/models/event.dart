@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Event {
   final String eid;
   final String sid;
@@ -28,8 +30,8 @@ class Event {
       tid: json['tid'] as String?,
       name: json['name'] as String,
       interest: json['interest'] as String,
-      start: json['start'] as String,
-      end: json['end'] as String,
+      start: DateFormat('yyyy-MM-dd').format(json['start'] as DateTime),
+      end: DateFormat('yyyy-MM-dd').format(json['end'] as DateTime),
       description: json['description'] as String,
       status: json['status'] as String,
     );
