@@ -6,6 +6,7 @@ import '../data/global.dart';
 import '../models/event.dart';
 import '../services/mysql_service.dart';
 import '../screens/event_request_screen.dart';
+import '../widgets/HomeScreen/event_card.dart';
 
 class HomeScreen extends StatefulWidget {
   final Event? event;
@@ -27,6 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    late List<Event> ongoingEvents;
+    late List<Event> completedEvents;
     return WillPopScope(
       onWillPop: () async {
         if (_isFirstBack) {
@@ -43,32 +46,166 @@ class _HomeScreenState extends State<HomeScreen> {
         }
         return false;
       },
-      child: Scaffold(
-        body: const Center(
-          child: Text('loggedin'),
-        ),
-        floatingActionButton: _isHosting != null
-            ? null
-            : FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const EventRequestScreen()))
-                      .then((_) async {
-                    var check =
-                        await MySqlService().isHosting(Global.userData!.sid);
-                    setState(() {
-                      _isHosting = check;
-                    });
-                  });
-                },
-                backgroundColor: Colors.amber,
-                child: const Icon(
-                  Icons.event,
-                  color: Colors.black,
-                ),
+      child: DefaultTabController(
+        initialIndex: 0,
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).primaryColor,
+            iconTheme: const IconThemeData(color: Colors.black),
+            centerTitle: true,
+            title: const Text(
+              'Events',
+              style: TextStyle(
+                color: Colors.white,
               ),
+            ),
+            bottom: const TabBar(
+              indicatorColor: Colors.amber,
+              tabs: [
+                Tab(
+                  text: 'Ongoing',
+                ),
+                Tab(
+                  text: 'Completed',
+                ),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              FutureBuilder<List<Event>>(
+                future: MySqlService().getOngoingEvents(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(snapshot.error.toString()),
+                    );
+                  } else if (snapshot.hasData) {
+                    ongoingEvents = snapshot.data!;
+                    return Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: NotificationListener<
+                              OverscrollIndicatorNotification>(
+                            onNotification: (overScroll) {
+                              overScroll.disallowIndicator();
+                              return false;
+                            },
+                            child: ListView.builder(
+                              itemCount: ongoingEvents.length,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    // Navigator.of(context)
+                                    //     .push(
+                                    //   MaterialPageRoute(
+                                    //       builder: (context) => OrderDetailScreen(
+                                    //           order: pendingOrders[index])),
+                                    // )
+                                    //     .then((value) {
+                                    //   if (value) {
+                                    //     setState(() {});
+                                    //   }
+                                    // });
+                                  },
+                                  child: EventCard(event: ongoingEvents[index]),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    );
+                  }
+                },
+              ),
+              FutureBuilder<List<Event>>(
+                future: MySqlService().getCompletedEvents(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(snapshot.error.toString()),
+                    );
+                  } else if (snapshot.hasData) {
+                    completedEvents = snapshot.data!;
+                    return Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: NotificationListener<
+                              OverscrollIndicatorNotification>(
+                            onNotification: (overScroll) {
+                              overScroll.disallowIndicator();
+                              return false;
+                            },
+                            child: ListView.builder(
+                              itemCount: completedEvents.length,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    // Navigator.of(context)
+                                    //     .push(
+                                    //   MaterialPageRoute(
+                                    //       builder: (context) => OrderDetailScreen(
+                                    //           order: pendingOrders[index])),
+                                    // )
+                                    //     .then((value) {
+                                    //   if (value) {
+                                    //     setState(() {});
+                                    //   }
+                                    // });
+                                  },
+                                  child:
+                                      EventCard(event: completedEvents[index]),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+          floatingActionButton: _isHosting != null
+              ? null
+              : FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const EventRequestScreen())).then((_) async {
+                      var check =
+                          await MySqlService().isHosting(Global.userData!.sid);
+                      setState(() {
+                        _isHosting = check;
+                      });
+                    });
+                  },
+                  backgroundColor: Colors.amber,
+                  child: const Icon(
+                    Icons.event,
+                    color: Colors.black,
+                  ),
+                ),
+        ),
       ),
     );
   }

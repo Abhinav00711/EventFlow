@@ -87,6 +87,30 @@ class MySqlService {
     return events;
   }
 
+  Future<List<Event>> getPendingEvents() async {
+    List<Event> events = [];
+    var con = await getConnection();
+    Results result =
+        await con.query('select * from event where status = "PENDING"');
+    con.close();
+    for (var r in result) {
+      events.add(Event.fromJson(r.fields));
+    }
+    return events;
+  }
+
+  Future<List<Event>> getCompletedEvents() async {
+    List<Event> events = [];
+    var con = await getConnection();
+    Results result =
+        await con.query('select * from event where status = "COMPLETED"');
+    con.close();
+    for (var r in result) {
+      events.add(Event.fromJson(r.fields));
+    }
+    return events;
+  }
+
   Future<Event?> isHosting(String sid) async {
     var con = await getConnection();
     Event? e;
