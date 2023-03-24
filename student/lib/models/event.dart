@@ -10,6 +10,7 @@ class Event {
   final String end;
   final String description;
   final String status;
+  final String graduate;
 
   Event({
     required this.eid,
@@ -21,6 +22,7 @@ class Event {
     required this.end,
     required this.description,
     required this.status,
+    required this.graduate,
   });
 
   factory Event.fromJson(Map<String, Object?> json) {
@@ -34,6 +36,7 @@ class Event {
       end: DateFormat('yyyy-MM-dd').format(json['end'] as DateTime),
       description: json['description'] as String,
       status: json['status'] as String,
+      graduate: json['graduate'] as String,
     );
   }
 }

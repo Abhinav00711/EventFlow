@@ -21,17 +21,19 @@ class EventRequestScreen extends StatefulWidget {
 class _EventRequestScreenState extends State<EventRequestScreen> {
   TextEditingController startDate = TextEditingController();
   TextEditingController endDate = TextEditingController();
-  List<String> _titles = [];
+  List<String> _interests = [];
+  List<String> _graduates = [];
   String _eventName = '';
   String _eventInterest = 'Computer Science';
   String _description = '';
+  String _graduate = 'Both';
   bool isConfirming = false;
 
   @override
   void initState() {
     startDate.text = '';
     endDate.text = '';
-    _titles = [
+    _interests = [
       'Computer Science',
       'Law',
       'Statistics',
@@ -39,6 +41,7 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
       'Humanities',
       'Science'
     ];
+    _graduates = ['Both', 'Postgraduate', 'Undergraduate'];
     super.initState();
   }
 
@@ -95,12 +98,6 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                       },
                     ),
                   ),
-                  // const Center(
-                  //     child: Text(
-                  //       'Interest',
-                  //       textAlign: TextAlign.center,
-                  //     ),
-                  //   ),
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
@@ -137,7 +134,7 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                           hint: const Text('Interest'),
                           value: _eventInterest,
                           isExpanded: true,
-                          items: _titles.map((String value) {
+                          items: _interests.map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(value),
@@ -147,6 +144,59 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                             if (_eventInterest != value) {
                               setState(() {
                                 _eventInterest = value!;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    foregroundDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30.0),
+                      border: Border.all(
+                        color: const Color(0xff092E34),
+                        width: 2.0,
+                      ),
+                    ),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      horizontalTitleGap: 0,
+                      leading: _graduate.isEmpty
+                          ? const Icon(
+                              FontAwesomeIcons.envelope,
+                              color: Colors.black,
+                            )
+                          : const Icon(
+                              FontAwesomeIcons.envelopeOpen,
+                              color: Colors.black,
+                            ),
+                      title: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          menuMaxHeight:
+                              MediaQuery.of(context).size.height * 0.4,
+                          icon: const Icon(
+                            Icons.arrow_drop_down_circle,
+                            color: Colors.black,
+                          ),
+                          hint: const Text('Graduate'),
+                          value: _graduate,
+                          isExpanded: true,
+                          items: _graduates.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            if (_graduate != value) {
+                              setState(() {
+                                _graduate = value!;
                               });
                             }
                           },
@@ -280,19 +330,19 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                               .validate()) {
                             EventRequestScreen._formKey.currentState!.save();
                             Event event = Event(
-                              eid: const Uuid()
-                                  .v1()
-                                  .replaceAll('-', '')
-                                  .substring(0, 10),
-                              sid: Global.userData!.sid,
-                              tid: null,
-                              name: _eventName,
-                              interest: _eventInterest,
-                              start: startDate.text,
-                              end: endDate.text,
-                              description: _description,
-                              status: 'PENDING',
-                            );
+                                eid: const Uuid()
+                                    .v1()
+                                    .replaceAll('-', '')
+                                    .substring(0, 10),
+                                sid: Global.userData!.sid,
+                                tid: null,
+                                name: _eventName,
+                                interest: _eventInterest,
+                                start: startDate.text,
+                                end: endDate.text,
+                                description: _description,
+                                status: 'PENDING',
+                                graduate: _graduate);
                             await MySqlService()
                                 .requestEvent(event)
                                 .then((value) {
