@@ -12,7 +12,7 @@ import '../models/student.dart';
 import '../services/mysql_service.dart';
 import '../data/global.dart';
 import '../models/event.dart';
-import '../screens/home_screen.dart';
+import '../screens/navigation_home_screen.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -45,11 +45,8 @@ class Wrapper extends StatelessWidget {
                           builder: (context, eventData) {
                             if (eventData.connectionState ==
                                 ConnectionState.done) {
-                              if (eventData.hasError) {
-                                return const ErrorScreen();
-                              } else {
-                                return HomeScreen(event: eventData.data);
-                              }
+                              return NavigationHomeScreen(
+                                  event: eventData.data);
                             } else {
                               return const LoadingScreen();
                             }
