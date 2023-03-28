@@ -143,7 +143,7 @@ class MySqlService {
   Future<int> requestEvent(Event event) async {
     var con = await getConnection();
     var result = await con.query(
-        'insert into event (eid,sid,tid,name,interest,start,end,description,status,graduate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'insert into event (eid,sid,tid,name,interest,start,end,description,status,graduate,image) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           event.eid,
           event.sid,
@@ -155,6 +155,7 @@ class MySqlService {
           event.description,
           event.status,
           event.graduate,
+          event.image,
         ]);
     con.close();
     return result.affectedRows!;

@@ -11,6 +11,7 @@ class Event {
   final String description;
   final String status;
   final String graduate;
+  final String? image;
 
   Event({
     required this.eid,
@@ -23,6 +24,7 @@ class Event {
     required this.description,
     required this.status,
     required this.graduate,
+    required this.image,
   });
 
   factory Event.fromJson(Map<String, Object?> json) {
@@ -37,6 +39,7 @@ class Event {
       description: json['description'] as String,
       status: json['status'] as String,
       graduate: json['graduate'] as String,
+      image: json['image'] as String?,
     );
   }
 }
