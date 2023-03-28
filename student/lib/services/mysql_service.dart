@@ -48,6 +48,23 @@ class MySqlService {
     return result.affectedRows!;
   }
 
+  Future<int> updateInterest(Interest interestData) async {
+    var con = await getConnection();
+    var result = await con.query(
+        'update interest set cs=?,law=?,statistics=?,commerce=?,humanities=?,science=? where intid = ?',
+        [
+          interestData.cs,
+          interestData.law,
+          interestData.statistics,
+          interestData.commerce,
+          interestData.humanities,
+          interestData.science,
+          interestData.intId,
+        ]);
+    con.close();
+    return result.affectedRows!;
+  }
+
   Future<Student> getStudent(String email) async {
     var con = await getConnection();
     Results result =

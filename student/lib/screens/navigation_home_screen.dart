@@ -8,6 +8,7 @@ import '../widgets/HomeScreen/drawer_user_controller.dart';
 import '../models/drawer_item.dart';
 import '../models/event.dart';
 import './home_screen.dart';
+import './profile_screen.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   final Event? event;
@@ -95,7 +96,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         case DrawerIndex.profile:
           {
             setState(() {
-              // screenView = const ProfileScreen();
+              screenView = const ProfileScreen();
             });
             break;
           }
