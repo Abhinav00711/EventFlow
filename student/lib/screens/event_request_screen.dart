@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../widgets/LoginScreen/decoration_functions.dart';
 import '../data/global.dart';
 import '../models/event.dart';
 import '../services/mysql_service.dart';
+import '../services/firebase_storage_service.dart';
 
 class EventRequestScreen extends StatefulWidget {
   static final _formKey = GlobalKey<FormState>();
@@ -27,7 +29,9 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
   String _eventInterest = 'Computer Science';
   String _description = '';
   String _graduate = 'Both';
+  String? _imageUrl;
   bool isConfirming = false;
+  XFile? _image;
 
   @override
   void initState() {
@@ -319,6 +323,74 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Center(
+                      child: _image == null
+                          ? ElevatedButton(
+                              onPressed: () async {
+                                _image = await ImagePicker()
+                                    .pickImage(source: ImageSource.gallery);
+                                setState(() {
+                                  _image = _image;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.amber,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 10),
+                                textStyle: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                shadowColor: Colors.amberAccent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                              ),
+                              child: isConfirming
+                                  ? const SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: CircularProgressIndicator(
+                                        color: Color(0xff092E34),
+                                      ),
+                                    )
+                                  : const Text(
+                                      'Upload Event Banner',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF213333),
+                                      ),
+                                    ),
+                            )
+                          : ListTile(
+                              leading: const Icon(
+                                FontAwesomeIcons.image,
+                                color: Colors.black,
+                              ),
+                              title: Text(
+                                _image!.path.split('/').last,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _image = null;
+                                  });
+                                },
+                                icon: const Icon(
+                                  FontAwesomeIcons.trash,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
                         horizontal: 50, vertical: 20),
                     child: Center(
                       child: ElevatedButton(
@@ -329,11 +401,20 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                           if (EventRequestScreen._formKey.currentState!
                               .validate()) {
                             EventRequestScreen._formKey.currentState!.save();
+                            final eid = const Uuid()
+                                .v1()
+                                .replaceAll('-', '')
+                                .substring(0, 10);
+                            if (_image != null) {
+                              await FirebaseStorageService()
+                                  .uploadEventBanner(
+                                      eid, _image!.name, _image!.path)
+                                  .then((value) {
+                                _imageUrl = value;
+                              });
+                            }
                             Event event = Event(
-                                eid: const Uuid()
-                                    .v1()
-                                    .replaceAll('-', '')
-                                    .substring(0, 10),
+                                eid: eid,
                                 sid: Global.userData!.sid,
                                 tid: null,
                                 name: _eventName,
@@ -342,7 +423,8 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                                 end: endDate.text,
                                 description: _description,
                                 status: 'PENDING',
-                                graduate: _graduate);
+                                graduate: _graduate,
+                                image: _imageUrl);
                             await MySqlService()
                                 .requestEvent(event)
                                 .then((value) {
