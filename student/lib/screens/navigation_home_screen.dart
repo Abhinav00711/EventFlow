@@ -100,6 +100,13 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
             });
             break;
           }
+        case DrawerIndex.myEvents:
+          {
+            setState(() {
+              //screenView = const EventDetailScreen();
+            });
+            break;
+          }
         default:
           {
             break;

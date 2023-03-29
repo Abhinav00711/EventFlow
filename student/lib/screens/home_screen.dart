@@ -7,6 +7,7 @@ import '../models/event.dart';
 import '../services/mysql_service.dart';
 import '../screens/event_request_screen.dart';
 import '../widgets/HomeScreen/event_card.dart';
+import './event_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final Event? event;
@@ -52,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).primaryColor,
-            iconTheme: const IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.white),
             centerTitle: true,
             title: const Text(
               'Events',
@@ -98,17 +99,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemBuilder: (context, index) {
                                 return InkWell(
                                   onTap: () {
-                                    // Navigator.of(context)
-                                    //     .push(
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) => OrderDetailScreen(
-                                    //           order: pendingOrders[index])),
-                                    // )
-                                    //     .then((value) {
-                                    //   if (value) {
-                                    //     setState(() {});
-                                    //   }
-                                    // });
+                                    Navigator.of(context)
+                                        .push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              EventDetailScreen(
+                                                  event: ongoingEvents[index])),
+                                    )
+                                        .then((value) {
+                                      if (value) {
+                                        setState(() {});
+                                      }
+                                    });
                                   },
                                   child: EventCard(event: ongoingEvents[index]),
                                 );

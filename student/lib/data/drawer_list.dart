@@ -16,6 +16,11 @@ class DrawerList {
       labelName: 'Profile',
       icon: const Icon(FontAwesomeIcons.solidUser),
     ),
+    DrawerItem(
+      index: DrawerIndex.myEvents,
+      labelName: 'My Events',
+      icon: const Icon(FontAwesomeIcons.calendarDays),
+    ),
   ];
 
   List<DrawerItem> get items {

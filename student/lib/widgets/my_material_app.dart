@@ -18,7 +18,10 @@ class MyMaterialApp extends StatelessWidget {
           backgroundColor: Colors.white,
           elevation: 0.0,
         ),
-        platform: TargetPlatform.android, colorScheme: ColorScheme.fromSwatch().copyWith(secondary: const Color(0xFF800E13)),
+        platform: TargetPlatform.android,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          secondary: const Color(0xFF800E13),
+        ),
       ),
       home: home,
     );

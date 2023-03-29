@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 enum DrawerIndex {
   home,
   profile,
+  myEvents,
 }
 
 class DrawerItem {

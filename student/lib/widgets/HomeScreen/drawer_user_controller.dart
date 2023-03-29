@@ -185,7 +185,7 @@ class _DrawerUserControllerState extends State<DrawerUserController>
                             width: AppBar().preferredSize.height - 8,
                             height: AppBar().preferredSize.height - 8,
                             child: Material(
-                              color: Colors.transparent,
+                              color: Colors.white,
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(
                                     AppBar().preferredSize.height),

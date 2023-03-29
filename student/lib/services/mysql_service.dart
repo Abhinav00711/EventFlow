@@ -5,6 +5,8 @@ import 'package:mysql1/mysql1.dart';
 import '../models/student.dart';
 import '../models/interest.dart';
 import '../models/event.dart';
+import '../models/event_detail.dart';
+import '../models/teacher.dart';
 
 class MySqlService {
   Future<MySqlConnection> getConnection() async {
@@ -73,12 +75,36 @@ class MySqlService {
     return Student.fromJson(result.elementAt(0).fields);
   }
 
+  Future<Student> getStudentById(String sid) async {
+    var con = await getConnection();
+    Results result =
+        await con.query('select * from student where sid = ?', [sid]);
+    con.close();
+    return Student.fromJson(result.elementAt(0).fields);
+  }
+
+  Future<Teacher> getTeacher(String tid) async {
+    var con = await getConnection();
+    Results result =
+        await con.query('select * from teacher where tid = ?', [tid]);
+    con.close();
+    return Teacher.fromJson(result.elementAt(0).fields);
+  }
+
   Future<Interest> getInterest(String intid) async {
     var con = await getConnection();
     Results result =
         await con.query('select * from interest where intid = ?', [intid]);
     con.close();
     return Interest.fromJson(result.elementAt(0).fields);
+  }
+
+  Future<Event> getEvent(String eid) async {
+    var con = await getConnection();
+    Results result =
+        await con.query('select * from event where eid = ?', [eid]);
+    con.close();
+    return Event.fromJson(result.elementAt(0).fields);
   }
 
   Future<List<Event>> getAllEvents() async {
@@ -159,5 +185,25 @@ class MySqlService {
         ]);
     con.close();
     return result.affectedRows!;
+  }
+
+  Future<EventDetail> getEventDetail(Event event) async {
+    Student student = await getStudentById(event.sid);
+    Teacher teacher = await getTeacher(event.tid!);
+    EventDetail eventDetail = EventDetail(
+      name: event.name,
+      interest: event.interest,
+      start: event.start,
+      end: event.end,
+      description: event.description,
+      status: event.status,
+      graduate: event.graduate,
+      image: event.image,
+      studName: student.name,
+      studPhone: student.phone,
+      teacherName: teacher.name,
+      teacherPhone: teacher.phone,
+    );
+    return eventDetail;
   }
 }
