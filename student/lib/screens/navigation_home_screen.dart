@@ -9,6 +9,7 @@ import '../models/drawer_item.dart';
 import '../models/event.dart';
 import './home_screen.dart';
 import './profile_screen.dart';
+import './my_events_screen.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   final Event? event;
@@ -67,6 +68,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           child: Scaffold(
             backgroundColor: AppTheme.nearlyWhite,
             body: DrawerUserController(
+              event: widget.event,
               screenIndex: drawerIndex,
               drawerWidth: MediaQuery.of(context).size.width * 0.75,
               onDrawerCall: (DrawerIndex drawerIndexdata) {
@@ -103,7 +105,14 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         case DrawerIndex.myEvents:
           {
             setState(() {
-              //screenView = const EventDetailScreen();
+              screenView = const MyEventsScreen();
+            });
+            break;
+          }
+        case DrawerIndex.hosted:
+          {
+            setState(() {
+              //screenView = const EventRequestScreen();
             });
             break;
           }

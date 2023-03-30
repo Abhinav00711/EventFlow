@@ -204,7 +204,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    eventDetail.data!.isParticipating
+                    eventDetail.data!.isParticipating ||
+                            DateTime.now()
+                                .isAfter(DateTime.parse(eventDetail.data!.end))
                         ? const SizedBox(height: 0)
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

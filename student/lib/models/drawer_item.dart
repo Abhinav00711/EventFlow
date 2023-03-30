@@ -4,6 +4,7 @@ enum DrawerIndex {
   home,
   profile,
   myEvents,
+  hosted,
 }
 
 class DrawerItem {

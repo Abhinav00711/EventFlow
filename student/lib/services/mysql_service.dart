@@ -235,4 +235,17 @@ class MySqlService {
     }
     return false;
   }
+
+  Future<List<Event>> getMyEvents(String sid) async {
+    List<Event> events = [];
+    var con = await getConnection();
+    Results result =
+        await con.query('select eid from participant where sid = ?', [sid]);
+    con.close();
+    for (var r in result) {
+      var e = await getEvent(r.fields['eid']);
+      events.add(e);
+    }
+    return events;
+  }
 }

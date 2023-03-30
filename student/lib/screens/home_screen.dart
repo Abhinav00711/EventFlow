@@ -103,7 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               EventDetailScreen(
-                                                  event: ongoingEvents[index])),
+                                                event: ongoingEvents[index],
+                                              )),
                                     );
                                   },
                                   child: EventCard(event: ongoingEvents[index]),
@@ -147,17 +148,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemBuilder: (context, index) {
                                 return InkWell(
                                   onTap: () {
-                                    // Navigator.of(context)
-                                    //     .push(
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) => OrderDetailScreen(
-                                    //           order: pendingOrders[index])),
-                                    // )
-                                    //     .then((value) {
-                                    //   if (value) {
-                                    //     setState(() {});
-                                    //   }
-                                    // });
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              EventDetailScreen(
+                                                event: completedEvents[index],
+                                              )),
+                                    );
                                   },
                                   child:
                                       EventCard(event: completedEvents[index]),

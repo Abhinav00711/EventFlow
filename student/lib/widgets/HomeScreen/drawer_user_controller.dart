@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../utils/app_theme.dart';
 import './home_drawer.dart';
 import '../../models/drawer_item.dart';
+import '../../models/event.dart';
 
 class DrawerUserController extends StatefulWidget {
   const DrawerUserController({
@@ -14,6 +15,7 @@ class DrawerUserController extends StatefulWidget {
     this.menuView,
     this.drawerIsOpen,
     this.screenIndex = DrawerIndex.home,
+    required this.event,
   }) : super(key: key);
 
   final double drawerWidth;
@@ -23,6 +25,7 @@ class DrawerUserController extends StatefulWidget {
   final AnimatedIconData animatedIconData;
   final Widget? menuView;
   final DrawerIndex screenIndex;
+  final Event? event;
 
   @override
   State<DrawerUserController> createState() => _DrawerUserControllerState();
@@ -134,6 +137,7 @@ class _DrawerUserControllerState extends State<DrawerUserController>
                         transform: Matrix4.translationValues(
                             scrollController.offset, 0.0, 0.0),
                         child: HomeDrawer(
+                          event: widget.event,
                           screenIndex: widget.screenIndex,
                           iconAnimationController: iconAnimationController,
                           callBackIndex: (DrawerIndex indexType) {
@@ -179,8 +183,9 @@ class _DrawerUserControllerState extends State<DrawerUserController>
                         // this just menu and arrow icon animation
                         Padding(
                           padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).padding.top + 8,
-                              left: 8),
+                            top: MediaQuery.of(context).padding.top + 8,
+                            left: 8,
+                          ),
                           child: SizedBox(
                             width: AppBar().preferredSize.height - 8,
                             height: AppBar().preferredSize.height - 8,
