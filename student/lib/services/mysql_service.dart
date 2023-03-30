@@ -187,9 +187,10 @@ class MySqlService {
     return result.affectedRows!;
   }
 
-  Future<EventDetail> getEventDetail(Event event) async {
+  Future<EventDetail> getEventDetail(Event event, String sid) async {
     Student student = await getStudentById(event.sid);
     Teacher teacher = await getTeacher(event.tid!);
+    bool isPart = await isParticipating(event.eid, sid);
     EventDetail eventDetail = EventDetail(
       name: event.name,
       interest: event.interest,
@@ -203,7 +204,35 @@ class MySqlService {
       studPhone: student.phone,
       teacherName: teacher.name,
       teacherPhone: teacher.phone,
+      isParticipating: isPart,
     );
     return eventDetail;
+  }
+
+  Future<int> participate(String eid, String sid) async {
+    var b = await isParticipating(eid, sid);
+    if (b) {
+      return -1;
+    }
+    var con = await getConnection();
+    var result = await con.query(
+        'insert into participant (eid,sid,attendance) values (?, ?, ?)', [
+      eid,
+      sid,
+      false,
+    ]);
+    con.close();
+    return result.affectedRows!;
+  }
+
+  Future<bool> isParticipating(String eid, String sid) async {
+    var con = await getConnection();
+    Results result = await con.query(
+        'select * from participant where sid = ? AND eid = ?', [sid, eid]);
+    con.close();
+    if (result.isNotEmpty) {
+      return true;
+    }
+    return false;
   }
 }

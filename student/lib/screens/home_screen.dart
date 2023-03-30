@@ -99,18 +99,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemBuilder: (context, index) {
                                 return InkWell(
                                   onTap: () {
-                                    Navigator.of(context)
-                                        .push(
+                                    Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               EventDetailScreen(
                                                   event: ongoingEvents[index])),
-                                    )
-                                        .then((value) {
-                                      if (value) {
-                                        setState(() {});
-                                      }
-                                    });
+                                    );
                                   },
                                   child: EventCard(event: ongoingEvents[index]),
                                 );

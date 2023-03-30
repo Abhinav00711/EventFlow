@@ -6,11 +6,17 @@ import '../models/event_detail.dart';
 import '../models/event.dart';
 import '../services/mysql_service.dart';
 import './error_screen.dart';
+import '../data/global.dart';
 
-class EventDetailScreen extends StatelessWidget {
+class EventDetailScreen extends StatefulWidget {
   final Event event;
   const EventDetailScreen({required this.event, Key? key}) : super(key: key);
 
+  @override
+  State<EventDetailScreen> createState() => _EventDetailScreenState();
+}
+
+class _EventDetailScreenState extends State<EventDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +33,8 @@ class EventDetailScreen extends StatelessWidget {
         ),
       ),
       body: FutureBuilder<EventDetail>(
-          future: MySqlService().getEventDetail(event),
+          future:
+              MySqlService().getEventDetail(widget.event, Global.userData!.sid),
           builder: (context, eventDetail) {
             if (eventDetail.hasError) {
               debugPrint(eventDetail.data.toString());
@@ -43,7 +50,8 @@ class EventDetailScreen extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(horizontal: 10),
                       padding: const EdgeInsets.all(15),
                       child: FadeInImage(
-                        image: NetworkImage(eventDetail.data!.image!),
+                        image: NetworkImage(eventDetail.data!.image ??
+                            'https://firebasestorage.googleapis.com/v0/b/eventflow-23e7e.appspot.com/o/no_photo.png?alt=media&token=0ed5f538-2ec6-4907-8d1d-dee89bcdb641'),
                         placeholder: const AssetImage('assets/images/logo.png'),
                         width: MediaQuery.of(context).size.width * 0.7,
                         fit: BoxFit.contain,
@@ -196,28 +204,40 @@ class EventDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Add logic to participate in the event
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 10),
-                          textStyle: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                    eventDetail.data!.isParticipating
+                        ? const SizedBox(height: 0)
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    await MySqlService()
+                                        .participate(widget.event.eid,
+                                            Global.userData!.sid)
+                                        .then((value) {
+                                      setState(() {});
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30, vertical: 10),
+                                    textStyle: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    shadowColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                    ),
+                                  ),
+                                  child: const Text('Participate'),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                            ],
                           ),
-                          shadowColor: Colors.red,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                        ),
-                        child: const Text('Participate'),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
                   ],
                 ),
               );
