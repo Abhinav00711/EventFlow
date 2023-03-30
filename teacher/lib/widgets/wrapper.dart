@@ -45,7 +45,7 @@ class Wrapper extends StatelessWidget {
                         return const ErrorScreen();
                       } else if (userData.hasData) {
                         Global.userData = userData.data;
-                        return  MyApp(text: userData.data!.email,);
+                        return  HomePage();
                       } else {
                         return const LoadingScreen();
                       }
