@@ -434,6 +434,7 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                                         Text('Event requested successfully.'),
                                   ),
                                 );
+                                Global.hostedEvent = event;
                                 Navigator.pop(context);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../data/global.dart';
 import '../widgets/HostScreen/detail_tab.dart';
+import '../widgets/HostScreen/approval_tab.dart';
 
 class HostEventScreen extends StatefulWidget {
   const HostEventScreen({Key? key}) : super(key: key);
@@ -11,17 +11,9 @@ class HostEventScreen extends StatefulWidget {
 }
 
 class _HostEventScreenState extends State<HostEventScreen> {
-  String _approvalType = '';
-  String _approvalDescription = '';
-  String _approvalAttachmentLink = '';
-
   String _selectedDate = '';
   String _selectedTime = '';
   int _selectedCapacity = 0;
-
-  void _sendApprovalRequest() {
-    // Send approval request
-  }
 
   void _bookVenue() {
     // Book venue
@@ -47,90 +39,6 @@ class _HostEventScreenState extends State<HostEventScreen> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildApprovalTab() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Approval Type',
-            ),
-            onChanged: (value) {
-              _approvalType = value;
-            },
-          ),
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Description',
-            ),
-            onChanged: (value) {
-              _approvalDescription = value;
-            },
-            maxLines: null,
-          ),
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Attachment Link',
-            ),
-            onChanged: (value) {
-              _approvalAttachmentLink = value;
-            },
-          ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: _sendApprovalRequest,
-            child: const Text('Send Request'),
-          ),
-          const SizedBox(height: 16.0),
-          const Center(
-              child: Text('Previous Approvals',
-                  style:
-                      TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold))),
-          const SizedBox(height: 16.0),
-          // ListView.builder(
-          //   shrinkWrap: true,
-          //   physics: const NeverScrollableScrollPhysics(),
-          //   itemCount: _previousApprovals.length,
-          //   itemBuilder: (context, index) {
-          //     var approval = _previousApprovals[index];
-          //     return Card(
-          //       child: InkWell(
-          //         onTap: () {
-          //           if (approval.status == ApprovalStatus.rejected) {
-          //             _openModalBottomSheet('Rejection Comments',
-          //                 Text(approval.rejectionComments));
-          //           }
-          //         },
-          //         child: Padding(
-          //           padding: const EdgeInsets.all(16.0),
-          //           child: Column(
-          //             crossAxisAlignment: CrossAxisAlignment.start,
-          //             children: [
-          //               Text(approval.approvalType,
-          //                   style: const TextStyle(
-          //                       fontSize: 18.0, fontWeight: FontWeight.bold)),
-          //               const SizedBox(height: 8.0),
-          //               Text(approval.description),
-          //               const SizedBox(height: 8.0),
-          //               Text(
-          //                   approval.status == ApprovalStatus.accepted
-          //                       ? 'Accepted'
-          //                       : 'Rejected',
-          //                   style:
-          //                       const TextStyle(fontWeight: FontWeight.bold)),
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //     );
-          //   },
-          // ),
-        ],
-      ),
     );
   }
 
@@ -244,6 +152,7 @@ class _HostEventScreenState extends State<HostEventScreen> {
             ),
           ),
           bottom: const TabBar(
+            indicatorColor: Colors.amber,
             tabs: [
               Tab(text: 'Details'),
               Tab(text: 'Approval'),
@@ -254,7 +163,7 @@ class _HostEventScreenState extends State<HostEventScreen> {
         body: TabBarView(
           children: [
             const DetailTab(),
-            _buildApprovalTab(),
+            const ApprovalTab(),
             _buildVenueTab(),
           ],
         ),

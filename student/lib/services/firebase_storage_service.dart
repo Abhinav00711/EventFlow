@@ -16,4 +16,12 @@ class FirebaseStorageService {
     final ref = _eventRef.child('$eid/banner');
     await ref.delete();
   }
+
+  Future<String> uploadEventApproval(
+      String eid, String aid, String filePath) async {
+    final ref = _eventRef.child('$eid/$aid');
+    final uploadTask = await ref.putFile(File(filePath));
+    final url = await uploadTask.ref.getDownloadURL();
+    return url;
+  }
 }

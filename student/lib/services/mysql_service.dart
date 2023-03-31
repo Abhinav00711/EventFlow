@@ -7,6 +7,7 @@ import '../models/interest.dart';
 import '../models/event.dart';
 import '../models/event_detail.dart';
 import '../models/teacher.dart';
+import '../models/approval.dart';
 
 class MySqlService {
   Future<MySqlConnection> getConnection() async {
@@ -263,6 +264,35 @@ class MySqlService {
           eventData.graduate,
           eventData.image,
           eventData.eid,
+        ]);
+    con.close();
+    return result.affectedRows!;
+  }
+
+  Future<List<Approval>> getEventApprovals(String eid) async {
+    List<Approval> approvals = [];
+    var con = await getConnection();
+    Results result =
+        await con.query('select * from approval where eid = ?', [eid]);
+    con.close();
+    for (var r in result) {
+      approvals.add(Approval.fromJson(r.fields));
+    }
+    return approvals;
+  }
+
+  Future<int> requestApproval(Approval approval) async {
+    var con = await getConnection();
+    var result = await con.query(
+        'insert into approval (aid,eid,status,type,description,attatchment,comment) values (?, ?, ?, ?, ?, ?, ?)',
+        [
+          approval.aid,
+          approval.eid,
+          approval.status,
+          approval.type,
+          approval.description,
+          approval.attatchment,
+          approval.comment,
         ]);
     con.close();
     return result.affectedRows!;
