@@ -33,7 +33,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   @override
   void initState() {
     super.initState();
-    drawerList = DrawerList(widget.event).items;
+    drawerList = DrawerList().items;
   }
 
   @override

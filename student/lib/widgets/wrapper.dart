@@ -45,6 +45,7 @@ class Wrapper extends StatelessWidget {
                           builder: (context, eventData) {
                             if (eventData.connectionState ==
                                 ConnectionState.done) {
+                              Global.hostedEvent = eventData.data;
                               return NavigationHomeScreen(
                                   event: eventData.data);
                             } else {

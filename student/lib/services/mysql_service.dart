@@ -248,4 +248,23 @@ class MySqlService {
     }
     return events;
   }
+
+  Future<int> updateEvent(Event eventData) async {
+    var con = await getConnection();
+    var result = await con.query(
+        'update event set name=?,interest=?,start=?,end=?,description=?,status=?,graduate=?,image=? where eid = ?',
+        [
+          eventData.name,
+          eventData.interest,
+          eventData.start,
+          eventData.end,
+          eventData.description,
+          eventData.status,
+          eventData.graduate,
+          eventData.image,
+          eventData.eid,
+        ]);
+    con.close();
+    return result.affectedRows!;
+  }
 }

@@ -2,25 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../widgets/LoginScreen/decoration_functions.dart';
-import '../data/global.dart';
-import '../models/event.dart';
-import '../services/mysql_service.dart';
-import '../services/firebase_storage_service.dart';
+import '../LoginScreen/decoration_functions.dart';
+import '../../data/global.dart';
+import '../../models/event.dart';
+import '../../services/mysql_service.dart';
+import '../../services/firebase_storage_service.dart';
 
-class EventRequestScreen extends StatefulWidget {
+class EditDetails extends StatefulWidget {
   static final _formKey = GlobalKey<FormState>();
-  const EventRequestScreen({super.key});
+  const EditDetails({Key? key}) : super(key: key);
 
   @override
-  State<EventRequestScreen> createState() => _EventRequestScreenState();
+  State<EditDetails> createState() => _EditDetailsState();
 }
 
-class _EventRequestScreenState extends State<EventRequestScreen> {
+class _EditDetailsState extends State<EditDetails> {
   TextEditingController startDate = TextEditingController();
   TextEditingController endDate = TextEditingController();
   List<String> _interests = [];
@@ -35,8 +34,13 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
 
   @override
   void initState() {
-    startDate.text = '';
-    endDate.text = '';
+    _eventName = Global.hostedEvent!.name;
+    _eventInterest = Global.hostedEvent!.interest;
+    _description = Global.hostedEvent!.description;
+    _graduate = Global.hostedEvent!.graduate;
+    _imageUrl = Global.hostedEvent!.image;
+    startDate.text = Global.hostedEvent!.start;
+    endDate.text = Global.hostedEvent!.end;
     _interests = [
       'Computer Science',
       'Law',
@@ -69,7 +73,7 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
         child: Container(
           padding: const EdgeInsets.all(20),
           child: Form(
-            key: EventRequestScreen._formKey,
+            key: EditDetails._formKey,
             child: SingleChildScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Column(
@@ -86,6 +90,7 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                         hintText: 'Event Name',
                         icon: FontAwesomeIcons.bookOpenReader,
                       ),
+                      initialValue: _eventName,
                       keyboardType: TextInputType.name,
                       autocorrect: false,
                       cursorColor: Colors.white,
@@ -301,6 +306,7 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                         hintText: 'Event Description',
                         icon: FontAwesomeIcons.bars,
                       ),
+                      initialValue: _description,
                       maxLength: 250,
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
                       minLines: 1,
@@ -355,9 +361,11 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                                         color: Color(0xff092E34),
                                       ),
                                     )
-                                  : const Text(
-                                      'Upload Event Banner',
-                                      style: TextStyle(
+                                  : Text(
+                                      _imageUrl == null
+                                          ? 'Add Image'
+                                          : 'Edit Image',
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF213333),
                                       ),
@@ -398,24 +406,24 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                           setState(() {
                             isConfirming = true;
                           });
-                          if (EventRequestScreen._formKey.currentState!
-                              .validate()) {
-                            EventRequestScreen._formKey.currentState!.save();
-                            final eid = const Uuid()
-                                .v1()
-                                .replaceAll('-', '')
-                                .substring(0, 10);
+                          if (EditDetails._formKey.currentState!.validate()) {
+                            EditDetails._formKey.currentState!.save();
                             if (_image != null) {
+                              if (_imageUrl != null) {
+                                await FirebaseStorageService()
+                                    .deleteEventBanner(Global.hostedEvent!.eid);
+                              }
                               await FirebaseStorageService()
-                                  .uploadEventBanner(eid, _image!.path)
+                                  .uploadEventBanner(
+                                      Global.hostedEvent!.eid, _image!.path)
                                   .then((value) {
                                 _imageUrl = value;
                               });
                             }
                             Event event = Event(
-                                eid: eid,
-                                sid: Global.userData!.sid,
-                                tid: null,
+                                eid: Global.hostedEvent!.eid,
+                                sid: Global.hostedEvent!.sid,
+                                tid: Global.hostedEvent!.tid,
                                 name: _eventName,
                                 interest: _eventInterest,
                                 start: startDate.text,
@@ -425,20 +433,21 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                                 graduate: _graduate,
                                 image: _imageUrl);
                             await MySqlService()
-                                .requestEvent(event)
+                                .updateEvent(event)
                                 .then((value) {
                               if (value == 1) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content:
-                                        Text('Event requested successfully.'),
+                                        Text('Event updated successfully.'),
                                   ),
                                 );
+                                Global.hostedEvent = event;
                                 Navigator.pop(context);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Event request failed.'),
+                                    content: Text('Event update failed.'),
                                   ),
                                 );
                               }
@@ -467,7 +476,7 @@ class _EventRequestScreenState extends State<EventRequestScreen> {
                                 ),
                               )
                             : const Text(
-                                'REQUEST EVENT',
+                                'UPDATE',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xFF213333),

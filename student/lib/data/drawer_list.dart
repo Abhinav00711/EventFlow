@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../models/drawer_item.dart';
-import '../models/event.dart';
+import '../data/global.dart';
 
 class DrawerList {
-  Event? event;
   final List<DrawerItem> _items = [
     DrawerItem(
       index: DrawerIndex.home,
@@ -25,16 +24,17 @@ class DrawerList {
     ),
   ];
 
-  DrawerList(this.event);
+  DrawerList();
 
   List<DrawerItem> get items {
     var a = [..._items];
-    if (event == null || event!.status == 'COMPLETED') {
+    if (Global.hostedEvent == null ||
+        Global.hostedEvent!.status == 'COMPLETED') {
       return a;
     }
     a.add(DrawerItem(
       index: DrawerIndex.hosted,
-      labelName: event!.name,
+      labelName: Global.hostedEvent!.name,
       icon: const Icon(FontAwesomeIcons.sitemap),
     ));
     return a;
