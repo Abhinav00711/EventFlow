@@ -7,6 +7,7 @@ import '../models/interest.dart';
 import '../models/event.dart';
 import '../models/event_detail.dart';
 import '../models/teacher.dart';
+import '../models/approval.dart';
 
 class MySqlService {
   Future<MySqlConnection> getConnection() async {
@@ -187,9 +188,10 @@ class MySqlService {
     return result.affectedRows!;
   }
 
-  Future<EventDetail> getEventDetail(Event event) async {
+  Future<EventDetail> getEventDetail(Event event, String sid) async {
     Student student = await getStudentById(event.sid);
     Teacher teacher = await getTeacher(event.tid!);
+    bool isPart = await isParticipating(event.eid, sid);
     EventDetail eventDetail = EventDetail(
       name: event.name,
       interest: event.interest,
@@ -203,7 +205,96 @@ class MySqlService {
       studPhone: student.phone,
       teacherName: teacher.name,
       teacherPhone: teacher.phone,
+      isParticipating: isPart,
     );
     return eventDetail;
+  }
+
+  Future<int> participate(String eid, String sid) async {
+    var b = await isParticipating(eid, sid);
+    if (b) {
+      return -1;
+    }
+    var con = await getConnection();
+    var result = await con.query(
+        'insert into participant (eid,sid,attendance) values (?, ?, ?)', [
+      eid,
+      sid,
+      false,
+    ]);
+    con.close();
+    return result.affectedRows!;
+  }
+
+  Future<bool> isParticipating(String eid, String sid) async {
+    var con = await getConnection();
+    Results result = await con.query(
+        'select * from participant where sid = ? AND eid = ?', [sid, eid]);
+    con.close();
+    if (result.isNotEmpty) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<List<Event>> getMyEvents(String sid) async {
+    List<Event> events = [];
+    var con = await getConnection();
+    Results result =
+        await con.query('select eid from participant where sid = ?', [sid]);
+    con.close();
+    for (var r in result) {
+      var e = await getEvent(r.fields['eid']);
+      events.add(e);
+    }
+    return events;
+  }
+
+  Future<int> updateEvent(Event eventData) async {
+    var con = await getConnection();
+    var result = await con.query(
+        'update event set name=?,interest=?,start=?,end=?,description=?,status=?,graduate=?,image=? where eid = ?',
+        [
+          eventData.name,
+          eventData.interest,
+          eventData.start,
+          eventData.end,
+          eventData.description,
+          eventData.status,
+          eventData.graduate,
+          eventData.image,
+          eventData.eid,
+        ]);
+    con.close();
+    return result.affectedRows!;
+  }
+
+  Future<List<Approval>> getEventApprovals(String eid) async {
+    List<Approval> approvals = [];
+    var con = await getConnection();
+    Results result =
+        await con.query('select * from approval where eid = ?', [eid]);
+    con.close();
+    for (var r in result) {
+      approvals.add(Approval.fromJson(r.fields));
+    }
+    return approvals;
+  }
+
+  Future<int> requestApproval(Approval approval) async {
+    var con = await getConnection();
+    var result = await con.query(
+        'insert into approval (aid,eid,status,type,description,attatchment,comment) values (?, ?, ?, ?, ?, ?, ?)',
+        [
+          approval.aid,
+          approval.eid,
+          approval.status,
+          approval.type,
+          approval.description,
+          approval.attatchment,
+          approval.comment,
+        ]);
+    con.close();
+    return result.affectedRows!;
   }
 }

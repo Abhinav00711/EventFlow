@@ -11,6 +11,7 @@ class EventDetail {
   final String studPhone;
   final String teacherName;
   final String teacherPhone;
+  final bool isParticipating;
 
   EventDetail({
     required this.name,
@@ -25,5 +26,6 @@ class EventDetail {
     required this.studPhone,
     required this.teacherName,
     required this.teacherPhone,
+    required this.isParticipating,
   });
 }

@@ -10,8 +10,7 @@ import '../widgets/HomeScreen/event_card.dart';
 import './event_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  final Event? event;
-  const HomeScreen({required this.event, super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,13 +18,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isFirstBack = true;
-  Event? _isHosting;
-
-  @override
-  void initState() {
-    _isHosting = widget.event;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,18 +91,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemBuilder: (context, index) {
                                 return InkWell(
                                   onTap: () {
-                                    Navigator.of(context)
-                                        .push(
+                                    Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               EventDetailScreen(
-                                                  event: ongoingEvents[index])),
-                                    )
-                                        .then((value) {
-                                      if (value) {
-                                        setState(() {});
-                                      }
-                                    });
+                                                event: ongoingEvents[index],
+                                              )),
+                                    );
                                   },
                                   child: EventCard(event: ongoingEvents[index]),
                                 );
@@ -153,17 +140,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemBuilder: (context, index) {
                                 return InkWell(
                                   onTap: () {
-                                    // Navigator.of(context)
-                                    //     .push(
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) => OrderDetailScreen(
-                                    //           order: pendingOrders[index])),
-                                    // )
-                                    //     .then((value) {
-                                    //   if (value) {
-                                    //     setState(() {});
-                                    //   }
-                                    // });
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              EventDetailScreen(
+                                                event: completedEvents[index],
+                                              )),
+                                    );
                                   },
                                   child:
                                       EventCard(event: completedEvents[index]),
@@ -185,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          floatingActionButton: _isHosting != null
+          floatingActionButton: Global.hostedEvent != null
               ? null
               : FloatingActionButton(
                   onPressed: () {
@@ -197,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       var check =
                           await MySqlService().isHosting(Global.userData!.sid);
                       setState(() {
-                        _isHosting = check;
+                        Global.hostedEvent = check;
                       });
                     });
                   },

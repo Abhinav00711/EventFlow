@@ -9,6 +9,8 @@ import '../models/drawer_item.dart';
 import '../models/event.dart';
 import './home_screen.dart';
 import './profile_screen.dart';
+import './my_events_screen.dart';
+import './host_event_screen.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   final Event? event;
@@ -27,7 +29,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   void initState() {
     super.initState();
     drawerIndex = DrawerIndex.home;
-    screenView = HomeScreen(event: widget.event);
+    screenView = const HomeScreen();
   }
 
   @override
@@ -40,7 +42,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         if (drawerIndex != DrawerIndex.home) {
           setState(() {
             drawerIndex = DrawerIndex.home;
-            screenView = HomeScreen(event: widget.event);
+            screenView = const HomeScreen();
           });
           return false;
         } else {
@@ -67,6 +69,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           child: Scaffold(
             backgroundColor: AppTheme.nearlyWhite,
             body: DrawerUserController(
+              event: widget.event,
               screenIndex: drawerIndex,
               drawerWidth: MediaQuery.of(context).size.width * 0.75,
               onDrawerCall: (DrawerIndex drawerIndexdata) {
@@ -89,7 +92,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         case DrawerIndex.home:
           {
             setState(() {
-              screenView = HomeScreen(event: widget.event);
+              screenView = const HomeScreen();
             });
             break;
           }
@@ -103,7 +106,14 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         case DrawerIndex.myEvents:
           {
             setState(() {
-              //screenView = const EventDetailScreen();
+              screenView = const MyEventsScreen();
+            });
+            break;
+          }
+        case DrawerIndex.hosted:
+          {
+            setState(() {
+              screenView = const HostEventScreen();
             });
             break;
           }

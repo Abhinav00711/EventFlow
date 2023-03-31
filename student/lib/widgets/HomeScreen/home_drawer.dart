@@ -8,6 +8,7 @@ import '../../models/drawer_item.dart';
 import '../../data/drawer_list.dart';
 import 'user_drawer.dart';
 import '../../data/global.dart';
+import '../../models/event.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({
@@ -15,11 +16,13 @@ class HomeDrawer extends StatefulWidget {
     required this.screenIndex,
     required this.iconAnimationController,
     required this.callBackIndex,
+    required this.event,
   }) : super(key: key);
 
   final AnimationController iconAnimationController;
   final DrawerIndex screenIndex;
   final Function(DrawerIndex) callBackIndex;
+  final Event? event;
 
   @override
   State<HomeDrawer> createState() => _HomeDrawerState();
