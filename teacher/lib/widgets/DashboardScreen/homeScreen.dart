@@ -8,13 +8,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'action_button_widget.dart';
 
 class MyEventsScreen extends StatefulWidget {
+  const MyEventsScreen({super.key});
+
   @override
   _MyEventsScreenState createState() => _MyEventsScreenState();
 }
 
 class _MyEventsScreenState extends State<MyEventsScreen> {
   List<Event> _events = [];
-  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -99,17 +100,17 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
   Widget build(BuildContext context) {
     if (_events.isEmpty) {
       return const Center(
-        child: Text('No new events'),
+        child: CircularProgressIndicator(),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
-          iconTheme: const IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.red),
           centerTitle: true,
           title: const Text(
-            'Events',
+            'Discover Events',
             style: TextStyle(
               color: Colors.white,
             ),
@@ -201,11 +202,16 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            event.image == null?
             Image.asset(
               'assets/images/comp.jpg' ?? '',
               fit: BoxFit.cover,
               height: 300.0,
-            ),
+            ):Image.network(
+        event.image ?? '',
+        fit: BoxFit.cover,
+        height: 300.0,
+        ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -251,7 +257,7 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
                       const Icon(Icons.business, size: 16.0, color: Color(0xff181818)),
                       const SizedBox(width: 8.0),
                       Text(
-                        'Graduate: ${event.graduate.toUpperCase()}',
+                        'Department: ${event.interest} | ${event.graduate}',
                         style: const TextStyle(
                             color: Color(0xff181818),
                             fontWeight: FontWeight.bold),

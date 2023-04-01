@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:mysql1/mysql1.dart';
+import 'package:teacher/data/global.dart';
+import 'package:teacher/models/approval.dart';
 
 import '../models/event.dart';
 import '../models/student.dart';
@@ -128,6 +130,16 @@ Future<List<Event>> getAllEvents() async {
   }
   return events;
 }
+  Future<List<Event>> getAllTeacherEvents() async {
+    List<Event> events = [];
+    var con = await getConnection();
+    Results result = await con.query('select * from event where tid=?',[Global.userData?.tid]);
+    con.close();
+    for (var r in result) {
+      events.add(Event.fromJson(r.fields));
+    }
+    return events;
+  }
 
 Future<List<Event>> getOngoingEvents() async {
   List<Event> events = [];
@@ -152,6 +164,17 @@ Future<List<Event>> getPendingEvents() async {
   }
   return events;
 }
+  Future<List<Approval>> getApprovals() async {
+    List<Approval> approvals = [];
+    var con = await getConnection();
+    Results result =
+    await con.query('SELECT e.name,a.aid,a.eid,a.status,a.type,a.description,a.attatchment,a.comment FROM `approval` a,event e WHERE a.status="PENDING" and a.eid=e.eid;');
+    con.close();
+    for (var r in result) {
+      approvals.add(Approval.fromJson(r.fields));
+    }
+    return approvals;
+  }
 
 Future<List<Event>> getCompletedEvents() async {
   List<Event> events = [];
@@ -176,19 +199,28 @@ Future<Event?> isHosting(String sid) async {
   }
   return e;
 }
+
   Future<int> updateTeacherIdEvent(Event event,String? tid) async {
     var con = await getConnection();
     print("1");
     var result = await con.query(
-        'update event set tid=?,status="ongoing" where eid=?',
+        'update event set tid=?,status="ONGOING" where eid=?',
         [
           tid,
           event.eid
         ]);
-    print("2");
     con.close();
-    print("3");
     print(result.affectedRows);
+    return result.affectedRows!;
+  }
+  Future<int> approveProposol(String? aid) async {
+    var con = await getConnection();
+    var result = await con.query(
+        'update approval set status="APPROVED" where aid=?',
+        [
+          aid
+        ]);
+    con.close();
     return result.affectedRows!;
   }
   Future<int> getApprovalsList(String tid) async{

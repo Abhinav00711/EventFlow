@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:teacher/models/approval.dart';
 
 import '../../models/event.dart';
 
 class EventCard extends StatefulWidget {
-  final Event event;
+  final Approval approval;
 
   const EventCard({
     super.key,
-    required this.event,
+    required this.approval,
   });
 
   @override
@@ -24,14 +25,13 @@ class _EventCardState extends State<EventCard> {
       child: Column(
         children: <Widget>[
           ListTile(
-            title: Text(widget.event.name),
-            subtitle: Text('From ${widget.event.start} to ${widget.event.end}'),
-            trailing: Text(widget.event.interest),
+            title: Text('${widget.approval.eventname} | ${widget.approval.type}'),
+            subtitle: Text('${widget.approval.status}'),
           ),
           if (_isExpanded)
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text(widget.event.description),
+              child: Text('${widget.approval.description}'),
             ),
           InkWell(
             onTap: () {

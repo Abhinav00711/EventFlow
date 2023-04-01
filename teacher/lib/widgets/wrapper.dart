@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:teacher/screens/home.dart';
 
 import '../screens/login_screen.dart';
+import '../screens/navigation_home_screen.dart';
 import '../screens/verify_screen.dart';
 import '../screens/error_screen.dart';
 import '../screens/loading_screen.dart';
@@ -45,7 +46,7 @@ class Wrapper extends StatelessWidget {
                         return const ErrorScreen();
                       } else if (userData.hasData) {
                         Global.userData = userData.data;
-                        return  HomePage();
+                        return  const NavigationHomeScreen();
                       } else {
                         return const LoadingScreen();
                       }
