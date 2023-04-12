@@ -8,6 +8,8 @@ import '../models/event.dart';
 import '../models/event_detail.dart';
 import '../models/teacher.dart';
 import '../models/approval.dart';
+import '../models/booking.dart';
+import '../models/venue.dart';
 
 class MySqlService {
   Future<MySqlConnection> getConnection() async {
@@ -296,5 +298,81 @@ class MySqlService {
         ]);
     con.close();
     return result.affectedRows!;
+  }
+
+  Future<List<Booking>> getAllBookings() async {
+    List<Booking> bookings = [];
+    var con = await getConnection();
+    Results result = await con.query('select * from booking');
+    con.close();
+    for (var r in result) {
+      bookings.add(Booking.fromJson(r.fields));
+    }
+    return bookings;
+  }
+
+  Future<List<Booking>> getEventBookings(String eid) async {
+    List<Booking> bookings = [];
+    var con = await getConnection();
+    Results result =
+        await con.query('select * from booking where eid = ?', [eid]);
+    con.close();
+    for (var r in result) {
+      bookings.add(Booking.fromJson(r.fields));
+    }
+    return bookings;
+  }
+
+  Future<int> addBooking(Booking booking) async {
+    var con = await getConnection();
+    var result = await con.query(
+        'insert into booking (bid,eid,vid,date,start,end) values (?, ?, ?, ?, ?, ?)',
+        [
+          booking.bid,
+          booking.eid,
+          booking.vid,
+          booking.date,
+          booking.start,
+          booking.end,
+        ]);
+    con.close();
+    return result.affectedRows!;
+  }
+
+  Future<List<Venue>> getAllVenues() async {
+    List<Venue> venues = [];
+    var con = await getConnection();
+    Results result = await con.query('select * from venue');
+    con.close();
+    for (var r in result) {
+      venues.add(Venue.fromJson(r.fields));
+    }
+    return venues;
+  }
+
+  Future<Venue?> getVenue(String vid) async {
+    var con = await getConnection();
+    Venue? venue;
+    Results result =
+        await con.query('select * from venue where vid = ?', [vid]);
+    con.close();
+    if (result.isNotEmpty) {
+      venue = Venue.fromJson(result.elementAt(0).fields);
+    }
+    return venue;
+  }
+
+  Future<List<Venue>> getAvailableVenues(
+      String date, String start, String end, int capacity) async {
+    List<Venue> venues = [];
+    var con = await getConnection();
+    Results result = await con.query(
+        'select * from venue where cap >= ? AND vid NOT IN (select vid from booking where date = ? AND start < ? AND end > ?)',
+        [capacity, date, end, start]);
+    con.close();
+    for (var r in result) {
+      venues.add(Venue.fromJson(r.fields));
+    }
+    return venues;
   }
 }

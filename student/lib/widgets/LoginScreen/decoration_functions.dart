@@ -10,7 +10,7 @@ InputDecoration registerInputDecoration(
     hintText: hintText,
     prefixIcon: Icon(
       icon,
-      color: Colors.white,
+      color: color ?? Colors.white,
     ),
     focusedBorder: OutlineInputBorder(
       borderSide: BorderSide(color: color ?? Colors.white, width: 2),
