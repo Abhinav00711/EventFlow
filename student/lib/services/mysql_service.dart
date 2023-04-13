@@ -10,6 +10,7 @@ import '../models/teacher.dart';
 import '../models/approval.dart';
 import '../models/booking.dart';
 import '../models/venue.dart';
+import '../models/participant.dart';
 
 class MySqlService {
   Future<MySqlConnection> getConnection() async {
@@ -190,11 +191,24 @@ class MySqlService {
     return result.affectedRows!;
   }
 
+  Future<bool> getAttendance(String eid, String sid) async {
+    var con = await getConnection();
+    Results result = await con.query(
+        'select * from participant where sid = ? AND eid = ?', [sid, eid]);
+    con.close();
+    if (result.isNotEmpty) {
+      return Participant.fromJson(result.elementAt(0).fields).attendance;
+    }
+    return false;
+  }
+
   Future<EventDetail> getEventDetail(Event event, String sid) async {
     Student student = await getStudentById(event.sid);
     Teacher teacher = await getTeacher(event.tid!);
     bool isPart = await isParticipating(event.eid, sid);
+    bool isAttended = isPart ? await getAttendance(event.eid, sid) : false;
     EventDetail eventDetail = EventDetail(
+      eid: event.eid,
       name: event.name,
       interest: event.interest,
       start: event.start,
@@ -208,6 +222,7 @@ class MySqlService {
       teacherName: teacher.name,
       teacherPhone: teacher.phone,
       isParticipating: isPart,
+      isAttended: isAttended,
     );
     return eventDetail;
   }
@@ -237,6 +252,15 @@ class MySqlService {
       return true;
     }
     return false;
+  }
+
+  Future<int> markAttendance(String eid, String sid) async {
+    var con = await getConnection();
+    var result = await con.query(
+        'update participant set attendance = ? where eid = ? AND sid = ?',
+        [true, eid, sid]);
+    con.close();
+    return result.affectedRows!;
   }
 
   Future<List<Event>> getMyEvents(String sid) async {

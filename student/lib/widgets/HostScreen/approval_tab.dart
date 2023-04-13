@@ -39,6 +39,26 @@ class _ApprovalTabState extends State<ApprovalTab> {
     super.initState();
   }
 
+  void _showBottomSheet(Widget content) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Container(
+            color: const Color.fromRGBO(0, 0, 0, 0.001),
+            child: GestureDetector(
+              onTap: () {},
+              child: content,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -297,107 +317,182 @@ class _ApprovalTabState extends State<ApprovalTab> {
               ],
             ),
             const SizedBox(height: 16.0),
-            const Divider(
-              color: Colors.black, //color of divider
-              height: 5, //height spacing of divider
-              thickness: 3, //thickness of divier line
-              indent: 5, //spacing at the start of divider
-              endIndent: 5, //spacing at the end of divider
-            ),
-            const SizedBox(height: 16.0),
-            const Center(
-                child: Text('Approvals',
-                    style: TextStyle(
-                        fontSize: 24.0, fontWeight: FontWeight.bold))),
-            const SizedBox(height: 16.0),
-            FutureBuilder<List<Approval>>(
-              future: MySqlService().getEventApprovals(Global.hostedEvent!.eid),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(snapshot.error.toString()),
-                  );
-                } else if (snapshot.hasData) {
-                  eventApprovals = snapshot.data!;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: eventApprovals.length,
-                        itemBuilder: (context, index) {
-                          Approval approval = eventApprovals[index];
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Card(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              color: Colors.amber,
-                              child: InkWell(
-                                onTap: () {
-                                  if (approval.status == 'REJECTED' &&
-                                      approval.comment != null) {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return SizedBox(
-                                          height: 300.0,
-                                          child: Column(
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.all(16.0),
-                                                child: Text(
-                                                  'Rejection Comments',
-                                                  style:
-                                                      TextStyle(fontSize: 20.0),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  _showBottomSheet(DraggableScrollableSheet(
+                    initialChildSize: 0.4,
+                    minChildSize: 0.25,
+                    maxChildSize: 0.75,
+                    builder: (_, controller) {
+                      return Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25.0),
+                            topRight: Radius.circular(25.0),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.remove,
+                              color: Colors.grey[600],
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text(
+                                'My Approvals',
+                                style: TextStyle(fontSize: 20.0),
+                              ),
+                            ),
+                            Expanded(
+                              child: FutureBuilder<List<Approval>>(
+                                future: MySqlService()
+                                    .getEventApprovals(Global.hostedEvent!.eid),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    return Center(
+                                      child: Text(snapshot.error.toString()),
+                                    );
+                                  } else if (snapshot.hasData) {
+                                    eventApprovals = snapshot.data!;
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount: eventApprovals.length,
+                                          itemBuilder: (context, index) {
+                                            Approval approval =
+                                                eventApprovals[index];
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Card(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                color: Colors.amber,
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    if (approval.status ==
+                                                            'REJECTED' &&
+                                                        approval.comment !=
+                                                            null) {
+                                                      showModalBottomSheet(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return SizedBox(
+                                                            height: 300.0,
+                                                            child: Column(
+                                                              children: [
+                                                                const Padding(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              16.0),
+                                                                  child: Text(
+                                                                    'Rejection Comments',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            20.0),
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                    child: Text(
+                                                                        approval
+                                                                            .comment!)),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(approval.type,
+                                                            style: const TextStyle(
+                                                                fontSize: 18.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                        const SizedBox(
+                                                            height: 8.0),
+                                                        Text(approval
+                                                            .description),
+                                                        const SizedBox(
+                                                            height: 8.0),
+                                                        Text(
+                                                            approval.status
+                                                                .toUpperCase(),
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                              Expanded(
-                                                  child:
-                                                      Text(approval.comment!)),
-                                            ],
-                                          ),
-                                        );
-                                      },
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  } else {
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                      ),
                                     );
                                   }
                                 },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(approval.type,
-                                          style: const TextStyle(
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold)),
-                                      const SizedBox(height: 8.0),
-                                      Text(approval.description),
-                                      const SizedBox(height: 8.0),
-                                      Text(approval.status.toUpperCase(),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ),
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  );
-                }
-              },
+                          ],
+                        ),
+                      );
+                    },
+                  ));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  shadowColor: Colors.amberAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                ),
+                child: const Text(
+                  'My Approvals',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF213333),
+                  ),
+                ),
+              ),
             ),
+            const SizedBox(height: 16.0),
           ],
         ),
       ),
