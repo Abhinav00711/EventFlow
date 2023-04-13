@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../models/drawer_item.dart';
-import '../data/global.dart';
+
 
 class DrawerList {
   final List<DrawerItem> _items = [

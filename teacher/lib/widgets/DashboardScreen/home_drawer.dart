@@ -8,7 +8,6 @@ import '../../models/drawer_item.dart';
 import '../../data/drawer_list.dart';
 import 'user_drawer.dart';
 import '../../data/global.dart';
-import '../../models/event.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({

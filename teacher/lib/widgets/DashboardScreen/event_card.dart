@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:teacher/models/approval.dart';
 
-import '../../models/event.dart';
 
 class EventCard extends StatefulWidget {
   final Approval approval;

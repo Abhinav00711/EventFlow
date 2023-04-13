@@ -47,9 +47,6 @@ class MySqlService {
             teacherData.department,
           ]);
     }
-    else{
-      print("Some error");
-    }
     con.close();
     return result.affectedRows!;
   }
@@ -202,7 +199,6 @@ Future<Event?> isHosting(String sid) async {
 
   Future<int> updateTeacherIdEvent(Event event,String? tid) async {
     var con = await getConnection();
-    print("1");
     var result = await con.query(
         'update event set tid=?,status="ONGOING" where eid=?',
         [
@@ -210,7 +206,6 @@ Future<Event?> isHosting(String sid) async {
           event.eid
         ]);
     con.close();
-    print(result.affectedRows);
     return result.affectedRows!;
   }
   Future<int> approveProposol(String? aid) async {

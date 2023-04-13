@@ -14,7 +14,6 @@ class Approvals extends StatefulWidget {
 }
 
 class _ApprovalsState extends State<Approvals> {
-  bool _isFirstBack = true;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,6 @@ class _ApprovalsState extends State<Approvals> {
         future: MySqlService().getApprovals(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            print(snapshot.error);
             return Center(
 
               child: Text(snapshot.error.toString()),

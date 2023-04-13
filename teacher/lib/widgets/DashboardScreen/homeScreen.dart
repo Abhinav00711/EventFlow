@@ -204,7 +204,7 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
           children: [
             event.image == null?
             Image.asset(
-              'assets/images/comp.jpg' ?? '',
+              'assets/images/comp.jpg',
               fit: BoxFit.cover,
               height: 300.0,
             ):Image.network(
@@ -304,85 +304,6 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
             ),
         ),
       ),
-   // ),
-      /*child: Padding(
-        padding: EdgeInsets.only(left: 36.0),
-        child: Container(
-          height: 580,
-          width: 340,
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset('assets/images/download.jpeg',
-                    fit: BoxFit.fitHeight,
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                child: Container(
-                  height: 80,
-                  width: 340,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    shadows: <BoxShadow>[
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          event.name,
-                          style: const TextStyle(
-                            fontFamily: 'Nunito',
-                            fontWeight: FontWeight.w800,
-                            fontSize: 21,
-                          ),
-                        ),
-                        Text(
-                          event.description,
-                          style: const TextStyle(
-                            fontFamily: 'Nunito',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-    ),*/
-    /*  background: Container(
-        color: Colors.red,
-        child: Icon(Icons.close, color: Colors.white),
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 16),
-      ),
-      secondaryBackground: Container(
-        color: Colors.green,
-        child: Icon(Icons.check, color: Colors.white),
-        alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: 16),
-      ),*/
-    //  onSecondaryTap: () => onAccepted(event),
     );
   }
 }

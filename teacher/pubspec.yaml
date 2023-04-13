@@ -30,6 +30,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+    #Intl
+  intl: ^0.17.0
+
+    #Uuid
+  uuid: ^3.0.7
 
   #Firebase
   firebase_core: ^2.7.0

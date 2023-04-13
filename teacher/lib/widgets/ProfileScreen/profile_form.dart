@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:teacher/models/teacher.dart';
 
 import '../../data/global.dart';
-import '../../models/student.dart';
 import '../LoginScreen/decoration_functions.dart';
 
 class ProfileForm extends StatelessWidget {

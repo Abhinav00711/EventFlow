@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:teacher/data/global.dart';
 import 'package:teacher/widgets/DashboardScreen/Approvals.dart';
 import 'package:teacher/widgets/DashboardScreen/homeScreen.dart';
-
 import '../utils/app_theme.dart';
 import '../widgets/DashboardScreen/EventRequests.dart';
 import '../widgets/DashboardScreen/drawer_user_controller.dart';
 import '../models/drawer_item.dart';
-import '../models/event.dart';
 import './profile_screen.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
@@ -29,7 +26,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   void initState() {
     super.initState();
     drawerIndex = DrawerIndex.home;
-    screenView = MyEventsScreen();
+    screenView = const MyEventsScreen();
   }
 
   @override
@@ -42,7 +39,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         if (drawerIndex != DrawerIndex.home) {
           setState(() {
             drawerIndex = DrawerIndex.home;
-            screenView = MyEventsScreen();
+            screenView = const MyEventsScreen();
           });
           return false;
         } else {
@@ -91,21 +88,21 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         case DrawerIndex.home:
           {
             setState(() {
-              screenView = MyEventsScreen();
+              screenView = const MyEventsScreen();
             });
             break;
           }
         case DrawerIndex.approvals:
           {
             setState(() {
-              screenView = Approvals();
+              screenView = const Approvals();
             });
             break;
           }
         case DrawerIndex.myEvents:
           {
             setState(() {
-              screenView = EventRequests();
+              screenView = const EventRequests();
             });
             break;
           }
