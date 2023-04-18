@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/HostScreen/detail_tab.dart';
 import '../widgets/HostScreen/approval_tab.dart';
 import '../widgets/HostScreen/venue_tab.dart';
+import './qr_screen.dart';
 
 class HostEventScreen extends StatelessWidget {
   const HostEventScreen({Key? key}) : super(key: key);
@@ -37,6 +38,14 @@ class HostEventScreen extends StatelessWidget {
             ApprovalTab(),
             VenueTab(),
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const QRScreen()),
+            );
+          },
+          child: const Icon(Icons.qr_code),
         ),
       ),
     );

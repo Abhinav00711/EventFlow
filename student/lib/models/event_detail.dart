@@ -1,4 +1,5 @@
 class EventDetail {
+  final String eid;
   final String name;
   final String interest;
   final String start;
@@ -12,8 +13,10 @@ class EventDetail {
   final String teacherName;
   final String teacherPhone;
   final bool isParticipating;
+  bool isAttended;
 
   EventDetail({
+    required this.eid,
     required this.name,
     required this.interest,
     required this.start,
@@ -27,5 +30,6 @@ class EventDetail {
     required this.teacherName,
     required this.teacherPhone,
     required this.isParticipating,
+    required this.isAttended,
   });
 }

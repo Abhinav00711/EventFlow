@@ -417,7 +417,7 @@ class _VenueTabState extends State<VenueTab> {
                             const Padding(
                               padding: EdgeInsets.all(16.0),
                               child: Text(
-                                'Event Bookings',
+                                'My Bookings',
                                 style: TextStyle(fontSize: 20.0),
                               ),
                             ),

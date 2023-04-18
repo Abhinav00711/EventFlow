@@ -7,6 +7,7 @@ import '../models/event.dart';
 import '../services/mysql_service.dart';
 import './error_screen.dart';
 import '../data/global.dart';
+import './qr_scan_screen.dart';
 
 class EventDetailScreen extends StatefulWidget {
   final Event event;
@@ -17,6 +18,7 @@ class EventDetailScreen extends StatefulWidget {
 }
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
+  bool isConfirming = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +39,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               MySqlService().getEventDetail(widget.event, Global.userData!.sid),
           builder: (context, eventDetail) {
             if (eventDetail.hasError) {
-              debugPrint(eventDetail.data.toString());
+              debugPrint(eventDetail.error.toString());
               return const ErrorScreen();
             } else if (eventDetail.hasData) {
               return SingleChildScrollView(
@@ -204,6 +206,70 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
+                    eventDetail.data!.isParticipating &&
+                            !DateTime.now().isAfter(
+                                DateTime.parse(eventDetail.data!.end)) &&
+                            !DateTime.now().isBefore(
+                                DateTime.parse(eventDetail.data!.start)) &&
+                            !eventDetail.data!.isAttended
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isConfirming = true;
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => QRScanScreen(
+                                            eid: Global.hostedEvent!.eid),
+                                      ),
+                                    ).then((value) {
+                                      setState(() {
+                                        isConfirming = false;
+                                      });
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30, vertical: 10),
+                                    textStyle: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    shadowColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                    ),
+                                  ),
+                                  child: isConfirming
+                                      ? const SizedBox(
+                                          height: 24,
+                                          width: 24,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      : Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: const [
+                                            Icon(
+                                              Icons.qr_code,
+                                              color: Colors.white,
+                                            ),
+                                            Text('Scan'),
+                                          ],
+                                        ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+                          )
+                        : const SizedBox(height: 0),
                     eventDetail.data!.isParticipating ||
                             DateTime.now()
                                 .isAfter(DateTime.parse(eventDetail.data!.end))
@@ -214,6 +280,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                               Center(
                                 child: ElevatedButton(
                                   onPressed: () async {
+                                    setState(() {
+                                      isConfirming = true;
+                                    });
                                     await MySqlService()
                                         .participate(widget.event.eid,
                                             Global.userData!.sid)
@@ -234,7 +303,15 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                       borderRadius: BorderRadius.circular(30.0),
                                     ),
                                   ),
-                                  child: const Text('Participate'),
+                                  child: isConfirming
+                                      ? const SizedBox(
+                                          height: 24,
+                                          width: 24,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      : const Text('Participate'),
                                 ),
                               ),
                               const SizedBox(height: 16),
