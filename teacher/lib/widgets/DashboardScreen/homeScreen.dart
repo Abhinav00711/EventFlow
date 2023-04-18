@@ -16,7 +16,6 @@ class MyEventsScreen extends StatefulWidget {
 
 class _MyEventsScreenState extends State<MyEventsScreen> {
   List<Event> _events = [];
-
   @override
   void initState() {
     super.initState();
@@ -36,7 +35,7 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
   void _acceptCard(Event event) {
     // TODO: Implement accept event logic
     setState(() {
-      MySqlService().updateTeacherIdEvent(event, Global.userData?.tid);
+      MySqlService().     updateTeacherIdEvent(event, Global.userData?.tid);
     });
   }
   void onDismissed(BuildContext context, DismissDirection direction, Event event) {

@@ -8,6 +8,7 @@ import '../models/event.dart';
 import '../models/student.dart';
 import '../models/teacher.dart';
 import '../models/interest.dart';
+import '../models/report.dart';
 
 class MySqlService {
 
@@ -130,7 +131,7 @@ Future<List<Event>> getAllEvents() async {
   Future<List<Event>> getAllTeacherEvents() async {
     List<Event> events = [];
     var con = await getConnection();
-    Results result = await con.query('select * from event where tid=?',[Global.userData?.tid]);
+    Results result = await con.query('select * from event where status = "ONGOING" and tid=?',[Global.userData?.tid]);
     con.close();
     for (var r in result) {
       events.add(Event.fromJson(r.fields));
@@ -218,6 +219,25 @@ Future<Event?> isHosting(String sid) async {
     con.close();
     return result.affectedRows!;
   }
+  Future<int> rejectProposol(String? aid) async {
+    var con = await getConnection();
+    var result = await con.query(
+        'update approval set status="REJECTED" where aid=?',
+        [
+          aid
+        ]);
+    con.close();
+    return result.affectedRows!;
+  }
+
+  Future<Report> getReportDetails(String? eid) async {
+    var con = await getConnection();
+    Results result =
+    await con.query('SELECT teacher.name AS teacherName, teacher.email AS teacherEmail, teacher.dept AS teacherDept,event.name AS event_name,event.interest AS event_interest, event.start AS event_start,event.end AS event_end,event.description AS event_description,event.status AS event_status, event.graduate AS event_graduate, event.image AS event_image,COUNT(participant.sid) AS participant_count,student.sid,student.name AS student_name,student.email AS student_email,student.dept AS student_department,student.course AS student_course,COUNT(booking.vid) AS venue_count FROM event JOIN teacher ON event.tid = teacher.tid JOIN booking ON booking.eid = booking.eid LEFT JOIN participant ON event.eid = participant.eid LEFT JOIN student ON participant.sid = student.sid WHERE event.eid =? GROUP BY teacher.name, teacher.email, teacher.dept, event.name, event.interest, event.start, event.end, event.description,event.status,event.graduate, event.image, student.sid, student.name, student.email,student.dept,student.course',[eid]);
+    con.close();
+    return Report.fromJson(result.elementAt(0).fields);
+  }
+
   Future<int> getApprovalsList(String tid) async{
     var con=await getConnection();
     var result= await con.query(

@@ -35,6 +35,13 @@ dependencies:
 
     #Uuid
   uuid: ^3.0.7
+   #pdf packages
+  pdf: ^3.10.1
+  flutter_pdfview: ^1.2.7
+  path_provider: ^2.0.14
+  syncfusion_flutter_pdf: ^21.1.39
+  open_filex: ^4.3.2
+  webview_flutter: ^4.0.7
 
   #Firebase
   firebase_core: ^2.7.0

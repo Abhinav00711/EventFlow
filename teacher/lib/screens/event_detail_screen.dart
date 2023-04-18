@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:teacher/models/approval.dart';
 
@@ -42,13 +42,43 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       height: 250,
                       margin: const EdgeInsets.symmetric(horizontal: 10),
                       padding: const EdgeInsets.all(15),
-                      child: FadeInImage(
+                      child:
+                      /*FadeInImage(
                         image: NetworkImage(widget.approval.attatchment ??
                             'https://firebasestorage.googleapis.com/v0/b/eventflow-23e7e.appspot.com/o/no_photo.png?alt=media&token=0ed5f538-2ec6-4907-8d1d-dee89bcdb641'),
                         placeholder: const AssetImage('assets/images/logo.png'),
                         width: MediaQuery.of(context).size.width * 0.7,
                         fit: BoxFit.contain,
-                      ),
+                      ),*/
+                      widget.approval.attatchment!=null?
+                      WebViewWidget(controller:
+                      WebViewController()
+                        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                        ..setBackgroundColor(const Color(0x00000000))
+                        ..setNavigationDelegate(
+                          NavigationDelegate(
+                            onProgress: (int progress) {
+                              // Update loading bar.
+                            },
+                            onPageStarted: (String url) {},
+                            onPageFinished: (String url) {},
+                            onWebResourceError: (WebResourceError error) {},
+                            onNavigationRequest: (NavigationRequest request) {
+                              if (request.url.startsWith('https://www.youtube.com/')) {
+                                return NavigationDecision.prevent;
+                              }
+                              return NavigationDecision.navigate;
+                            },
+                          ),
+                        )
+
+                        ..loadRequest(Uri.parse(widget.approval.attatchment.toString()))
+                      ):FadeInImage(
+                        image: NetworkImage('https://firebasestorage.googleapis.com/v0/b/eventflow-23e7e.appspot.com/o/no_photo.png?alt=media&token=0ed5f538-2ec6-4907-8d1d-dee89bcdb641'),
+                        placeholder: const AssetImage('assets/images/logo.png'),
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        fit: BoxFit.contain,
+                      )
                     ),
                     const SizedBox(height: 16),
                     Padding(
@@ -84,39 +114,79 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                  Center(
-                    child: ElevatedButton(
-                    onPressed: () async {
-                    await MySqlService().approveProposol(widget.approval.aid).then((value) {
-                    setState(() {});
-                    });
-                    Fluttertoast.showToast(
-                        msg: "Approved",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0
-                    );
-                    Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(
-                    horizontal: 30, vertical: 10),
-                    textStyle: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    ),
-                    shadowColor: Colors.red,
-                    shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    ),
-                    child: const Text('Approve'),
+                  Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child:
+                    Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children:[
+                      ElevatedButton(
+                        onPressed: () async {
+                          await MySqlService().approveProposol(widget.approval.aid).then((value) {
+                            setState(() {});
+                          });
+                          Fluttertoast.showToast(
+                              msg: "Approved",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0
+                          );
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 10),
+                          textStyle: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          shadowColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                        child: const Text('Approve'),
+                      ),
+                      SizedBox(width: 20),
+                      ElevatedButton(
+                        onPressed: () async {
+                          await MySqlService().rejectProposol(widget.approval.aid).then((value) {
+                            setState(() {});
+                          });
+                          Fluttertoast.showToast(
+                              msg: "REJECTED",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0
+                          );
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 10),
+                          textStyle: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          shadowColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                        child: const Text('Reject'),
+                      ),
+                    ],
                     ),
                   ),
+
                   ],
                 ),
                 ),
